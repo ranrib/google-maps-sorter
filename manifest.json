@@ -1,0 +1,27 @@
+{
+  "name": "Google Maps Sorter",
+  "description": "Sort Google Maps results by the number of reviews.",
+  "author": "Ran Ribenzaft",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.google.com/maps/*",
+        "https://maps.google.com/*"
+      ],
+      "js": ["src/content_script.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": ["storage", "activeTab"],
+  "icons": {
+    "16": "images/maps-sorter-16.png",
+    "32": "images/maps-sorter-32.png",
+    "64": "images/maps-sorter-64.png",
+    "128": "images/maps-sorter-128.png"
+  }
+}
