@@ -19,6 +19,8 @@ function sortResults() {
     const articleElement = element.closest('div[role="article"]');
     parentContainer.appendChild(articleElement);
   });
+
+  document.querySelector('[aria-label="Results for Restaurants"]').firstChild.scrollIntoView();
 }
 
 function injectCSS(css) {
