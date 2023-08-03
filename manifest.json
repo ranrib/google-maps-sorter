@@ -2,7 +2,7 @@
   "name": "Google Maps Sorter",
   "description": "Sort Google Maps results by the number of reviews.",
   "author": "Ran Ribenzaft",
-  "version": "1.0",
+  "version": "1.1",
   "manifest_version": 3,
   "content_scripts": [
     {
