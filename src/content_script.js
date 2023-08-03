@@ -12,11 +12,11 @@ function sortResults() {
   }).sort((a, b) => b.reviewsCount - a.reviewsCount);
 
   // Find the parent container of the elements
-  const parentContainer = elements[0].closest('div[role="article"]').parentNode;
+  const parentContainer = elements[0].closest('div[aria-label]').parentNode;
 
   // Reorder the elements in the UI
   sortedElements.forEach(({ element }) => {
-    const articleElement = element.closest('div[role="article"]');
+    const articleElement = element.closest('div[aria-label]');
     parentContainer.appendChild(articleElement);
   });
 
