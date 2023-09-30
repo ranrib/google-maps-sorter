@@ -12,15 +12,15 @@ function sortResults() {
   }).sort((a, b) => b.reviewsCount - a.reviewsCount);
 
   // Find the parent container of the elements
-  const parentContainer = elements[0].closest('div[aria-label]').parentNode;
+  const parentContainer = elements[0].closest('div[aria-label]').parentNode.parentNode;
 
   // Reorder the elements in the UI
   sortedElements.forEach(({ element }) => {
-    const articleElement = element.closest('div[aria-label]');
+    const articleElement = element.closest('div[aria-label]').parentNode;
     parentContainer.appendChild(articleElement);
   });
 
-  document.querySelector('[aria-label="Results for Restaurants"]').firstChild.scrollIntoView();
+  document.querySelector('[role=feed]').firstChild.scrollIntoView();
 }
 
 function injectCSS(css) {
