@@ -9,18 +9,20 @@ function sortResults() {
     const reviewsText = element.textContent;
     const reviewsCount = parseInt(reviewsText.replace(/[^\d]/g, ''), 10);
     return { element, reviewsCount };
-  }).sort((a, b) => b.reviewsCount - a.reviewsCount);
+  }).sort((a, b) => a.reviewsCount - b.reviewsCount);
 
   // Find the parent container of the elements
-  const parentContainer = elements[0].closest('div[aria-label]').parentNode.parentNode;
+  const parentContainer = elements[0].closest('div[aria-label]');
 
   // Reorder the elements in the UI
   sortedElements.forEach(({ element }) => {
-    const articleElement = element.closest('div[aria-label]').parentNode;
-    parentContainer.appendChild(articleElement);
+    const articleElement = element.closest('div[jsaction]').parentNode;
+    const SeparatorElement = articleElement.nextElementSibling;
+    parentContainer.insertBefore(SeparatorElement, parentContainer.children[2]);
+    parentContainer.insertBefore(articleElement, SeparatorElement);
   });
 
-  document.querySelector('[role=feed]').firstChild.scrollIntoView();
+  document.querySelector('[role=feed]').children[1].scrollIntoView();
 }
 
 function injectCSS(css) {
