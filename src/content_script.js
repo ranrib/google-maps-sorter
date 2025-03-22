@@ -1,28 +1,77 @@
 function sortResults() {
-  // Select all elements with the class UY7F9
+  // Select all elements with the class UY7F9 (reviews count)
   const elements = Array.from(document.getElementsByClassName('UY7F9'));
 
   if (elements.length === 0) return;
 
-  // Extract the number of reviews and sort the elements
-  const sortedElements = elements.map(element => {
-    const reviewsText = element.textContent;
-    const reviewsCount = parseInt(reviewsText.replace(/[^\d]/g, ''), 10);
-    return { element, reviewsCount };
-  }).sort((a, b) => a.reviewsCount - b.reviewsCount);
+  // Get the settings
+  chrome.storage.sync.get(['minReviews', 'sortBy'], (result) => {
+    const minReviews = result.minReviews || 0;
+    const sortBy = result.sortBy || 'reviews';
 
-  // Find the parent container of the elements
-  const parentContainer = elements[0].closest('div[aria-label]');
+    // Extract the number of reviews and ratings for each element
+    const sortedElements = elements.map(element => {
+      const articleElement = element.closest('div[jsaction]').parentNode;
+      const reviewsText = element.textContent;
+      const reviewsCount = parseInt(reviewsText.replace(/[^\d]/g, ''), 10);
+      
+      // Find the rating element within the same article
+      const ratingElement = articleElement.querySelector('.MW4etd');
+      const rating = ratingElement ? parseFloat(ratingElement.textContent) : 0;
 
-  // Reorder the elements in the UI
-  sortedElements.forEach(({ element }) => {
-    const articleElement = element.closest('div[jsaction]').parentNode;
-    const SeparatorElement = articleElement.nextElementSibling;
-    parentContainer.insertBefore(SeparatorElement, parentContainer.children[2]);
-    parentContainer.insertBefore(articleElement, SeparatorElement);
+      return { element, reviewsCount, rating };
+    })
+    .filter(({ reviewsCount }) => reviewsCount >= minReviews)
+    .sort((a, b) => {
+      if (sortBy === 'rating') {
+        // Sort by rating (descending) and then by number of reviews (descending) for equal ratings
+        return b.rating === a.rating ? a.reviewsCount - b.reviewsCount : a.rating - b.rating;
+      } else {
+        // Sort by number of reviews (descending)
+        return a.reviewsCount - b.reviewsCount;
+      }
+    });
+
+    // Find the parent container of the elements
+    const parentContainer = elements[0].closest('div[aria-label]');
+
+    // Hide elements with fewer reviews than the minimum
+    elements.forEach(element => {
+      const articleElement = element.closest('div[jsaction]').parentNode;
+      const reviewsCount = parseInt(element.textContent.replace(/[^\d]/g, ''), 10);
+      if (reviewsCount < minReviews) {
+        articleElement.style.display = 'none';
+        const separatorElement = articleElement.nextElementSibling;
+        if (separatorElement) {
+          separatorElement.style.display = 'none';
+        }
+      } else {
+        articleElement.style.display = '';
+        const separatorElement = articleElement.nextElementSibling;
+        if (separatorElement) {
+          separatorElement.style.display = '';
+        }
+      }
+    });
+
+    // Reorder the elements in the UI
+    sortedElements.forEach(({ element }) => {
+      const articleElement = element.closest('div[jsaction]').parentNode;
+      const separatorElement = articleElement.nextElementSibling;
+      parentContainer.insertBefore(separatorElement, parentContainer.children[2]);
+      parentContainer.insertBefore(articleElement, separatorElement);
+    });
+
+    // Remove any loader element
+    const lXJj5cElement = parentContainer.querySelector('.lXJj5c');
+    if (lXJj5cElement) {
+      lXJj5cElement.remove();
+    }
+
+    if (sortedElements.length > 0) {
+      document.querySelector('[role=feed]').children[1].scrollIntoView();
+    }
   });
-
-  document.querySelector('[role=feed]').children[1].scrollIntoView();
 }
 
 function injectCSS(css) {
@@ -93,3 +142,10 @@ window.addEventListener('load', async () => {
   await delay(5000);
   addSortingButton();
 })
+
+// Listen for settings updates from popup
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'SETTINGS_UPDATED') {
+    sortResults(); // Re-sort with new minimum reviews setting
+  }
+});

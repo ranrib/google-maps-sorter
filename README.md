@@ -1,5 +1,5 @@
 # Google Maps Sorter
-Sort Google Maps results by the number of reviews.
+Sort Google Maps results by the number of reviews and rating.
 
 [![Watch the video](images/promo.png)](https://www.youtube.com/watch?v=rFjf9aZvy34)
 (Click on the image to see a full video example on YouTube)
@@ -11,3 +11,10 @@ This extension adds the sorting button on the bottom right part. To use it:
 * Click on the sorting button and go back to the top.
 
 ![Config](images/button.png)
+
+
+### Creating the Zip file:
+
+'''console
+zip -r extension.zip manifest.json src images -x images/promo.png -x images/button.png -x images/.DS_Store -x extension.zip
+'''

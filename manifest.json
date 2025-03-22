@@ -2,8 +2,12 @@
   "name": "Sort Maps Results",
   "description": "Sort Google Maps results by the number of reviews.",
   "author": "Ran Ribenzaft",
-  "version": "1.4",
+  "version": "1.5",
   "manifest_version": 3,
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "src/popup.html"
+  },
   "content_scripts": [
     {
       "matches": [
