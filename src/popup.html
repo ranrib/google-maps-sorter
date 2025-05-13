@@ -4,7 +4,7 @@
   <title>Maps Sorter Settings</title>
   <style>
     body {
-      width: 300px;
+      width: 350px; /* Increased width to accommodate more fields */
       padding: 16px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
@@ -71,30 +71,127 @@
     .status.show {
       opacity: 1;
     }
+    .toggle-switch-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toggle-label {
+      font-weight: normal;
+      color: #202124;
+      cursor: pointer;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+    }
+    input:checked + .slider {
+      background-color: #1a73e8;
+    }
+    input:focus + .slider {
+      box-shadow: 0 0 1px #1a73e8;
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    .slider.round {
+      border-radius: 24px;
+    }
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    .section-title {
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 5px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="section-title">General Settings</div>
     <div class="form-group">
       <label for="minReviews">Minimum number of reviews:</label>
-      <input type="number" id="minReviews" min="0" placeholder="Enter minimum reviews">
+      <input type="number" id="minReviews" min="0" step="1" placeholder="e.g., 0">
     </div>
     <div class="form-group">
       <label>Sort by:</label>
       <div class="radio-group">
         <div class="radio-option">
-          <input type="radio" id="sortByReviews" name="sortBy" value="reviews" checked>
+          <input type="radio" id="sortByReviews" name="sortBy" value="reviews">
           <label for="sortByReviews">Number of Reviews</label>
         </div>
         <div class="radio-option">
           <input type="radio" id="sortByRating" name="sortBy" value="rating">
           <label for="sortByRating">Rating</label>
         </div>
+        <div class="radio-option">
+          <input type="radio" id="sortByCombined" name="sortBy" value="combined">
+          <label for="sortByCombined">Combined Metric</label>
+        </div>
       </div>
     </div>
+    <div class="form-group">
+      <label>Combined Metric Display:</label>
+      <div class="toggle-switch-container">
+        <label class="switch">
+          <input type="checkbox" id="showMetricAnnotation">
+          <span class="slider round"></span>
+        </label>
+        <label for="showMetricAnnotation" class="toggle-label">Show annotation in search results</label>
+      </div>
+    </div>
+
+    <div class="section-title">Combined Metric Formula Constants</div>
+    <div class="form-group">
+      <label for="formulaInfluence">Influence (0-1):</label>
+      <input type="number" id="formulaInfluence" min="0" max="1" step="0.01" placeholder="e.g., 0.5">
+    </div>
+    <div class="form-group">
+      <label for="formulaMinUserRatingNum">Min Reviews for Influence Boost:</label>
+      <input type="number" id="formulaMinUserRatingNum" min="0" step="1" placeholder="e.g., 50">
+    </div>
+    <div class="form-group">
+      <label for="formulaBaseline">Rating Baseline (1-5):</label>
+      <input type="number" id="formulaBaseline" min="1" max="5" step="0.1" placeholder="e.g., 4.5">
+    </div>
+    <div class="form-group">
+      <label for="formulaBaselineCoefficient">Baseline Coefficient:</label>
+      <input type="number" id="formulaBaselineCoefficient" step="0.01" placeholder="e.g., 1.5">
+    </div>
+
     <button class="save-button" id="save">Save Settings</button>
     <div class="status" id="status">Settings saved!</div>
   </div>
   <script src="popup.js"></script>
 </body>
-</html> 
+</html>
