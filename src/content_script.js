@@ -32,8 +32,8 @@ function sortResults() {
       }
     });
 
-    // Find the parent container of the elements
-    const parentContainer = elements[0].closest('div[aria-label]');
+    // Find the parent container of the elements - should be the feed/results list
+    const parentContainer = document.querySelector('[role=feed]');
 
     // Hide elements with fewer reviews than the minimum
     elements.forEach(element => {
